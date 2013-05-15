@@ -1,0 +1,77 @@
+# webfont-prep.pe
+
+# Generates webfont-ready files as per http://goo.gl/0qowi
+# Author: Brian Zick <http://21326.info>
+# Version:  1
+# Date:   27 September 2011
+/*
+
+DESCRIPTION
+  saves a source file, cleans glyph outlines, coverts to tt outlines,
+  and hints fonts before saving hinted and unhinted variants in both .sfd and .ttf.
+  You may need to change the path variable in this script for your project;
+  by default it is set to ../Release.
+
+BUGS
+  Some functions are used twice in a row. This is because they 
+  (for some reason) did not work properly when used once.
+  
+  On my system, the generated *-TTF-hints.ttf has no hints? I don't know why.
+  *-TTF-hints.sfd does, however, have hints. A workaround was found by
+  Alexei Vanyashin <alexei.vanyashin@gmail.com>: split the script into two
+  parts - one with hints, one without.
+  
+  I have not found a way to set "Really use Typo Metrics", and reportedly,
+  fontforge doesn't export it to the TTF files anyway.
+  
+  It would be nice if fontforge could create a sub-folder for each version.
+
+TODO
+  Options to enable or disable hinted/not hinted versions.
+*/
+
+Open($1)
+
+fontname  = $fontname
+version   = $fontversion
+
+# Fix for rejected EOT's in IE8: 
+# http://stackoverflow.com/questions/12449512/why-does-one-of-these-font-face-render-in-ie8-but-the-others-dont/12459447#12459447
+# http://fontforge.org/scripting-alpha.html#SetFontNames
+  SetFontNames($fontname,$fontname,$fontname,"","",version)
+
+# Glyph cleanup
+  SelectAll()
+  UnlinkReference()
+  RemoveOverlap()
+  CorrectDirection()
+  ScaleToEm(2048)
+
+# Convert splines to quadratic
+  SetFontOrder(2)
+  Simplify(128,2.05)
+  Simplify(128,2.05)
+  RoundToInt()
+  RoundToInt()
+
+i=1
+while ( i<$argc )
+  # Hinting
+  if ($argv[i] == "-autohint")
+    Print('Autohinting...')
+    AutoHint()
+    PrivateGuess("BlueScale")
+    PrivateGuess("BlueValues")
+    PrivateGuess("OtherBlues")
+    PrivateGuess("StdHW")
+    PrivateGuess("StdVW")
+    PrivateGuess("StemSnapH")
+    PrivateGuess("StemSnapV")
+    AutoHint()
+    AutoInstr()
+  endif
+  i = i+1
+endloop
+
+# Save.
+Generate($1:r + '-webfont' + '.ttf')

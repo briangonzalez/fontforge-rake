@@ -1,7 +1,7 @@
 # FontForge Rake
 A set of Rake tasks for working with FontForge. 
 
-There is no need to install FontForge on your system in order to get this repo working. It comes bundled with a universal binary, which can be found [here](http://fuuko.libferris.com/osx/packages/).
+There is no need to install FontForge on your system in order to get this repo working. This rep comes bundled with a universal binary, which can be found [here](http://fuuko.libferris.com/osx/packages/).
 
 ## Usage
 Type `rake -T` to see all tasks.

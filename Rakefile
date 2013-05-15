@@ -5,7 +5,7 @@ FF_BINARY = File.join('./FontForge.app', 'Contents', 'Resources', 'opt', 'local'
 task :default do
   puts "Usage:"
   puts "======================"
-  puts "FILE=fonts/SourceSansPro-SemiboldIt-webfont.ttf rake ff:fontforge_info"
+  puts "FILE=fonts/SourceSansPro-SemiboldIt-webfont.ttf rake ff:name"
   puts ""
   puts "Tasks:"
   puts "======================"
@@ -47,6 +47,17 @@ namespace :ff do
     puts script("characters")
   end
 
+  desc "Prepares a TTF file for the web - optional `autohint=true` arg."
+  # Usage: FILE="fonts/Idealist Sans.ttf" autohint=true rake ff:webfont_prep
+  task :webfont_prep do
+    puts script("webfont-prep", "#{'-autohint' if ENV['autohint']}")
+
+    `mkdir output` unless File.exists?('output') 
+    ext  = File.extname(ENV['FILE'])
+    base = File.basename(ENV['FILE'], ext)
+    `mv "fonts/#{base}-webfont#{ext}" output/`
+  end
+
   desc "Print FontForge info"
   task :fontforge_info do
     puts script("info")
@@ -54,6 +65,6 @@ namespace :ff do
 
 end
 
-def script(name)
-  `#{FF_BINARY} -script scripts/#{name}.pe #{ENV['FILE']}`
+def script(name, *args)
+  `#{FF_BINARY} -script "scripts/#{name}.pe" "#{ENV['FILE']}" #{args.join(' ')}`
 end
