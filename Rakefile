@@ -58,6 +58,11 @@ namespace :ff do
     `mv "fonts/#{base}-webfont#{ext}" output/`
   end
 
+  desc "Convert from one font to another; OUT=< outfile >"
+  task :convert do
+    puts script("convert", "#{ENV['OUT']}")
+  end
+
   desc "Print FontForge info"
   task :fontforge_info do
     puts script("info")
