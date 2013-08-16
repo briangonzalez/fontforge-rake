@@ -1,7 +1,16 @@
+
+# More info can be found here:
+# http://fontforge.org/scripting-alpha.html#GlyphInfo
+
 Open($1)
 Reencode("unicode")
 Reencode("compacted")
 SelectAll()
 foreach
-  Print( GlyphInfo("Unicode") )
+  Print( "Name: " + GlyphInfo("Name") )
+  Print( "Comment: " + GlyphInfo("Comment") )
+  Print( "Unicode: " + GlyphInfo("Unicode") )
+  Print( "Encoding: " + GlyphInfo("Encoding") )
+  Print( "GlyphIndex: " + GlyphInfo( "GlyphIndex" ) )
+  Print( "---" )
 endloop
